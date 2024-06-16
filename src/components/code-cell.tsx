@@ -1,30 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import bundle from "../bundler";
 import CodeEditor from "./code-editor";
 import Preview from "./preview";
+import Resizable from "./resizable";
+import { Cell } from "../state";
+import { useActions } from "../hooks/use-actions";
 
 
+interface CodeCellProps {
+  cell: Cell
+}
 
-const CodeCell = () => {
+const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const [code, setCode] = useState("");
-  const [input, setInput] = useState("");
+  const [err, setErr] = useState('');
+  const {updateCell} = useActions()
 
-  const onClick = async () => {
-    const output = await bundle(input);
-    setCode(output);
-  };
+
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+    const output = await bundle(cell.content);
+
+    setCode(output.code);
+    setErr(output.err)
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [cell.content]);
 
   return (
-    <div>
+    <Resizable direction="vertical">
+    <div style={{height:'calc(100% - 10px)', display: 'flex', flexDirection: 'row'}}>
+      <Resizable direction="horizontal">
       <CodeEditor
-        initialValue="const a=1;"
-        onChange={(value) => setInput(value)}
+        initialValue={cell.content}
+        onChange={(value) => updateCell(cell.id, value)}
       />
-      <div>
-        <button onClick={onClick}>Submit</button>
-      </div>
-      <Preview code={code} />
+      </Resizable>
+      
+      <Preview code={code} err={err} />
     </div>
+    </Resizable>
   );
 };
 
