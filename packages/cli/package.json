@@ -10,17 +10,20 @@
     "dist"
   ],
   "scripts": {
-    "start": "tsc --watch --preserveWatchOutput"
+    "start": "tsc --watch --preserveWatchOutput",
+    "prepublishOnly": "esbuild src/index.ts --platform=node --outfile=dist/index.js --bundle --minify --define:process.env.NODE_ENV='production'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "commander": "^12.1.0",
-    "@jbook-tmartinss/local-api": "^1.0.0"
+  "@jbook-tmartinss/local-client": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.8",
-    "typescript": "^5.5.2"
+    "esbuild": "0.8.26",
+    "typescript": "^5.5.2",
+    "@jbook-tmartinss/local-api": "^1.0.0",
+    "commander": "^12.1.0"
   }
 }
