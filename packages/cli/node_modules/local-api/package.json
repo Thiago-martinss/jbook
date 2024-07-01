@@ -1,5 +1,5 @@
 {
-  "name": "local-api",
+  "name": "@jbook-tmartinss/local-api",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -19,6 +19,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "http-proxy-middleware": "^3.0.0"
+    "http-proxy-middleware": "^3.0.0",
+    "@jbook-tmartinss/local-client": "^0.1.0"
   }
 }

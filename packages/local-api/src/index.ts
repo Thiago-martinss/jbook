@@ -1,8 +1,29 @@
 import  express from "express"
-export const serve = (port: number, filename: string, dir: string) => {
+import { createProxyMiddleware } from "http-proxy-middleware";
+import path from 'path'
+import { createCellsRouter } from "./routes/cells";
+
+export const serve = (port: number, filename: string, dir: string, useProxy: boolean) => {
     const app = express();
 
-    app.listen(port, () => {
-        console.log('Listening on port', port);
+    app.use(createCellsRouter(filename, dir))
+
+    if (useProxy) {
+        app.use(createProxyMiddleware({
+            target: 'http://127.0.0.1:3000',
+            ws: true,
+            changeOrigin: true,
+        }),
+    )
+    } else {
+        const packagePath = require.resolve('@jbook-tmartinss/local-client/build/index/html');
+        app.use(express.static(path.dirname(packagePath)))
+    }
+
+
+    return new Promise<void>((resolve, reject) => {
+        app.listen(port, resolve).on('error', reject);
     });
 };
+
+
